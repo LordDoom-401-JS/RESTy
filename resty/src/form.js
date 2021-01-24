@@ -5,28 +5,35 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      display: false,
       routeType: 'No route type selected',
       url: 'No URL provided'
-      //define routeType and url as arrays if they need to hold multiple states, use this.setState.push ({ key: data}), to add states to the arrays
     }
-  }
-
-  handleRadio = e => {
-    let radioSelection = e.target.value;
-    this.setState({ routeType: radioSelection });
-  }
-
-  handleInput = e => {
-    e.preventDefault();
-   
-    let urlInput = e.target.value;
-    this.setState({ url: urlInput });
   }
 
   handleSubmit = e => {
     e.preventDefault();
+    let radioSelection = e.target.routeType.value;
+    this.setState({ routeType: radioSelection });
+
+    let urlInput = e.target.url.value;
+    this.setState({ url: urlInput });
+
+    this.setState({ display: true });
+
+    this.getResults(radioSelection, urlInput);
   }
 
+  getResults = async (method='GET', url) => {
+    const apiRes = await fetch(url, { method: `${method}`, mode: 'cors'})
+    .then(response => {
+      if(response.status !==200)return;
+      return response.json();
+    });
+    console.log ('apiRes.results', apiRes.results);
+    this.props.provideRes(apiRes.results);
+  }
+ 
   render(){
     return(
       <>
@@ -54,7 +61,7 @@ class Form extends React.Component {
             </label>
 
             <section id="buttonSection"> 
-            
+
               <label>
                 URL: 
                 <input id="urlInput" type='text' name="url" onChange={this.handleInput}/>
@@ -66,9 +73,11 @@ class Form extends React.Component {
 
           </fieldset>
         </form>
+        {!this.state.display ? '' : 
         <div>
           <section id="outputSection">{this.state.routeType}: {this.state.url}</section>
         </div>
+        } 
       </>
     );
   }
