@@ -6,7 +6,7 @@ class Results extends React.Component {
   render(){
     console.log('this.props results page ', this.props);
     return(
-      <>
+      <div id="resultsDiv">
 
         <section id="headersSection">
           <h3>Response Headers</h3>
@@ -19,7 +19,7 @@ class Results extends React.Component {
           <p>Count: <span data-testid="count">{this.props.count}</span></p>
         </section>
 
-      </>
+      </div>
     );
   }
 };
